@@ -1,0 +1,26 @@
+{
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "body-parser": "^1.20.4",
+    "ejs": "^3.1.10",
+    "express": "^4.22.1",
+    "express-mysql-session": "^3.0.3",
+    "express-session": "^1.18.2",
+    "multer": "^2.0.2",
+    "mysql": "^2.18.1",
+    "mysql2": "^3.14.5",
+    "nodemailer": "^7.0.6",
+    "razorpay": "^2.9.6"
+  },
+  "name": "shopping_cart",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
