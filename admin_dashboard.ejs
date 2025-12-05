@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div class="container mt-5">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>📊 Admin Dashboard</h2>
+        <a href="/admin/logout" class="btn btn-outline-danger">Logout</a>
+    </div>
+
+    <p>Welcome, <strong><%= email %></strong>!</p>
+
+    <!-- Action Buttons -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <a href="/admin/upload_product" class="btn btn-success w-100 mb-3">Upload New Product</a>
+        </div>
+        <div class="col-md-4">
+            <a href="/" class="btn btn-secondary w-100 mb-3">Go to Storefront</a>
+        </div>
+    </div>
+
+    <!-- Product List -->
+    <h4 class="mb-3">🛍️ Manage Products</h4>
+    <% if (products && products.length > 0) { %>
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Image</th>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th class="text-center">Stock</th>
+                        <th class="text-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% products.forEach(product => { %>
+                        <tr>
+                            <td><%= product.product_id %></td>
+                            <td>
+                                <img src="<%= product.product_image %>" alt="<%= product.product_name %>" style="width:50px; height:50px; object-fit:cover;">
+                            </td>
+                            <td><%= product.product_name %></td>
+                            <td>₹<%= Number(product.product_price).toFixed(2) %></td>
+                            <td class="text-center">
+                                <div class="d-flex justify-content-center align-items-center gap-2">
+                                    <form action="/admin/stock/<%= product.product_id %>" method="POST" style="display:inline;">
+                                        <input type="hidden" name="action" value="decrease">
+                                        <button type="submit" class="btn btn-outline-secondary btn-sm">-</button>
+                                    </form>
+                                    <span><%= product.stock %></span>
+                                    <form action="/admin/stock/<%= product.product_id %>" method="POST" style="display:inline;">
+                                        <input type="hidden" name="action" value="increase">
+                                        <button type="submit" class="btn btn-outline-secondary btn-sm">+</button>
+                                    </form>
+                                </div>
+                            </td>
+                            <td class="text-center">
+                                <form action="/admin/delete/<%= product.product_id %>" method="POST" onsubmit="return confirm('Are you sure you want to delete this product? This will also remove it from carts and orders.');">
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    <% } else { %>
+        <p class="text-muted">No products found.</p>
+    <% } %>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

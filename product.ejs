@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ashik Ecommerce</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container mt-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Ashik Ecommerce</h2>
+        <div>
+            <a href="/my-orders" class="btn btn-warning me-2">View Orders</a>
+            <a href="/checkout" class="btn btn-success me-2">Checkout</a>
+            <a href="/admin/login" class="btn btn-primary">Admin Login</a>
+        </div>
+    </div>
+
+    <!-- 👤 Login/Logout Section -->
+    <div class="d-flex justify-content-end mb-3">
+      <% if (email) { %>
+        <span class="me-3">👋 Welcome, <%= email %></span>
+        <a href="/logout" class="btn btn-outline-danger btn-sm">Logout</a>
+      <% } else { %>
+        <a href="/login" class="btn btn-outline-primary btn-sm">Login</a>
+      <% } %>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="mb-3">
+        <input type="text" id="productSearch" class="form-control" placeholder="🔍 Search products...">
+    </div>
+
+    <!-- Product List -->
+    <h4 class="mb-3">🛍️ Product List</h4>
+    <div class="row" id="productList">
+        <% products.forEach(product => { 
+            let imageSrc = product.product_image 
+                ? (product.product_image.startsWith("http") 
+                    ? product.product_image 
+                    : "/public/" + product.product_image) 
+                : "/public/no-image.png";
+        %>
+        <div class="col-md-4 mb-4 product-card">
+            <div class="card h-100 shadow-sm">
+                <img src="<%= imageSrc %>" class="card-img-top" alt="<%= product.product_name %>" style="height: 200px; object-fit: cover;">
+                <div class="card-body">
+                    <h5 class="card-title"><%= product.product_name %></h5>
+                    <p class="card-text">₹<%= Number(product.product_price).toFixed(2) %></p>
+                    <form action="<%= email ? '/add_cart' : '/login' %>" method="POST">
+                        <input type="hidden" name="product_id" value="<%= product.product_id %>">
+                        <input type="hidden" name="product_name" value="<%= product.product_name %>">
+                        <input type="hidden" name="product_price" value="<%= product.product_price %>">
+                        <button type="submit" class="btn btn-primary">
+                            <%= email ? "Add to Cart" : "Login to Add" %>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <% }) %>
+    </div>
+
+    <!-- Cart Section (only for logged-in users) -->
+    <% if (email) { %>
+      <h4 class="mt-5 mb-3">🛒 Your Cart</h4>
+      <% if (cart && cart.length > 0) { 
+          let grandTotal = 0;
+      %>
+      <table class="table table-bordered">
+          <thead class="table-light">
+              <tr>
+                  <th>Name</th>
+                  <th>Price</th>
+                  <th>Qty</th>
+                  <th>Total</th>
+                  <th>Action</th>
+              </tr>
+          </thead>
+          <tbody>
+              <% cart.forEach(item => {
+                  let itemTotal = item.product_price * item.quantity;
+                  grandTotal += itemTotal;
+              %>
+              <tr>
+                  <td><%= item.product_name %></td>
+                  <td>₹<%= Number(item.product_price).toFixed(2) %></td>
+                  <td><%= item.quantity %></td>
+                  <td>₹<%= itemTotal.toFixed(2) %></td>
+                  <td>
+                      <a href="/remove_item?id=<%= item.product_id %>" class="btn btn-danger btn-sm">Remove</a>
+                  </td>
+              </tr>
+              <% }) %>
+              <tr class="table-secondary">
+                  <td colspan="3" class="text-end"><strong>Grand Total</strong></td>
+                  <td colspan="2"><strong>₹<%= grandTotal.toFixed(2) %></strong></td>
+              </tr>
+          </tbody>
+      </table>
+      <% } else { %>
+          <p>Your cart is empty.</p>
+      <% } %>
+    <% } %>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Simple client-side search filter
+    document.getElementById('productSearch').addEventListener('keyup', function() {
+        const searchValue = this.value.toLowerCase();
+        document.querySelectorAll('#productList .product-card').forEach(card => {
+            const productName = card.querySelector('.card-title').textContent.toLowerCase();
+            card.style.display = productName.includes(searchValue) ? '' : 'none';
+        });
+    });
+</script>
+</body>
+</html>

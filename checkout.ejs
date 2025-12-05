@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Checkout</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="bg-light">
+
+<div class="container mt-5">
+    <div class="d-flex justify-content-end mb-3">
+    <a href="/my-orders" class="btn btn-warning me-2">View Orders</a>
+    <a href="/" class="btn btn-secondary">Back to Products</a>
+</div>
+
+    <h1 class="mb-4">💳 Checkout</h1>
+
+    <% if (cart.length > 0) { %>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Qty</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% let grandTotal = 0; %>
+                <% cart.forEach(item => { %>
+                    <% let total = item.product_price * item.quantity; %>
+                    <% grandTotal += total; %>
+                    <tr>
+                        <td><%= item.product_name %></td>
+                        <td>₹<%= item.product_price %></td>
+                        <td><%= item.quantity %></td>
+                        <td>₹<%= total %></td>
+                    </tr>
+                <% }) %>
+                <tr>
+                    <td colspan="3" class="text-end"><strong>Grand Total:</strong></td>
+                    <td><strong>₹<%= grandTotal %></strong></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Checkout Form -->
+        <form action="/place_order" method="POST" class="mt-4">
+            <div class="mb-3">
+                <label class="form-label">Full Name</label>
+                <input type="text" name="customer_name" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Address</label>
+                <textarea name="customer_address" class="form-control" required></textarea>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Payment Method</label>
+                <select name="payment_method" class="form-select" required>
+                    <option value="COD">Cash on Delivery</option>
+                    <option value="Card">Credit/Debit Card</option>
+                     <option value="Online">Online</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-success">Place Order</button>
+            <a href="/" class="btn btn-secondary">Back to Cart</a>
+        </form>
+    <% } else { %>
+        <p>Your cart is empty. <a href="/">Go back to products</a></p>
+    <% } %>
+</div>
+
+</body>
+</html>

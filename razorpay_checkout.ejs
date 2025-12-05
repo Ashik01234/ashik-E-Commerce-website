@@ -1,0 +1,38 @@
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    const options = {
+        key: "rzp_test_RIo4sYyENAZOrE",
+        amount: "<%= amount * 100 %>",
+        currency: "INR",
+        name: "<%= customer_name %>",
+        description: "Order Payment",
+        order_id: "<%= order_id %>",
+        handler: function (response) {
+            fetch("/payment-success", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    razorpay_order_id: response.razorpay_order_id,
+                    razorpay_payment_id: response.razorpay_payment_id,
+                    razorpay_signature: response.razorpay_signature,
+                    user_order_number: "<%= user_order_number %>",
+                    user_id: "<%= user_id %>"
+                })
+            })
+            .then(res => res.text())
+            .then(html => {
+                document.open();
+                document.write(html);
+                document.close();
+            })
+            .catch(err => {
+                console.error("Payment success handling failed:", err);
+                alert("Something went wrong after payment. Please contact support.");
+            });
+        },
+        theme: { color: "#3399cc" }
+    };
+
+    const rzp = new Razorpay(options);
+    rzp.open();
+</script>
