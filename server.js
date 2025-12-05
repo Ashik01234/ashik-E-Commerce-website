@@ -35,7 +35,7 @@ const db = mysql.createConnection({
 
 db.connect((err) => {
     if (err) {
-        console.error("❌ Error connecting to MySQL:", err);
+        console.error(" Error connecting to MySQL:", err);
         process.exit(1);
     }
     console.log("✅ MySQL Database connected successfully");
@@ -491,5 +491,6 @@ app.get("/logout", (req, res) => {
 
 //  Start server
 app.listen(3000, () => {
-    console.log("🚀 Server started on http://localhost:3000");
+    console.log(" Server started on http://localhost:3000");
+
 });
